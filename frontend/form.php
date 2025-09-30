@@ -1,8 +1,8 @@
-<div class="reval-container container my-4">
+<div class="reval-container container my-4 d-block p-4">
 	<h2 class="mb-3">Real Estate Valuation</h2>
 	<div id="reval-alert" class="alert d-none" role="alert"></div>
 
-	<form id="reval-form" novalidate>
+	<form id="reval-form" style="overflow-y: auto;" novalidate>
 		<div class="border rounded p-3 bg-light">
 			<div class="mb-2 small text-muted" id="reval-step-counter">Step 1</div>
 

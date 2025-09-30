@@ -59,7 +59,7 @@
             if(review){
                 review.innerHTML = Object.keys(payload).map(function(k){
                     var v = payload[k];
-                    return '<div class="col-md-6"><div class="border rounded p-2 bg-white"><small class="text-muted">' + k.replace(/_/g,' ') + '</small><div class="fw-semibold">' + v + '</div></div></div>';
+                    return '<div class="col-md-6"><div class="border rounded p-2 bg-white "><small class="text-muted">' + k.replace(/_/g,' ') + '</small><div class="fw-semibold " style="overflow: hidden;">' + v + '</div></div></div>';
                 }).join('');
             }
         }
@@ -137,6 +137,12 @@
 				select.innerHTML = '<option value="">Select commune</option>' + items.map(function(it){
 					return '<option value="' + it.value.replace(/"/g,'&quot;') + '">' + it.label + '</option>';
 				}).join('');
+                // Enhance with Choices.js (searchable)
+                try {
+                    if (select._choicesInstance) { select._choicesInstance.destroy(); }
+                    var inst = new Choices(select, { searchEnabled: true, shouldSort: false, itemSelectText: '', placeholder: true, placeholderValue: 'Select commune' });
+                    select._choicesInstance = inst;
+                } catch (e) {}
 			})
 			.catch(function(err){ showAlert('danger', 'Failed to load communes.'); });
 	}

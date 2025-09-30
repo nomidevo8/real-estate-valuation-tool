@@ -3,7 +3,7 @@
  * Plugin Name: Real Estate Valuation API
  * Description: Provides REST API endpoints for uploading valuation CSV/XLSX and computing property valuations.
  * Version: 0.1.1
- * Author: AI Assistant
+ * Author: SERVE TECH
  */
 
 if (!defined('ABSPATH')) {
@@ -708,16 +708,21 @@ class REValuationPlugin {
 		// Bootstrap from CDN
 		wp_register_style('bootstrap-5', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css', [], '5.3.3');
 		wp_register_script('bootstrap-5', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js', [], '5.3.3', true);
+		// Choices.js (vanilla searchable select)
+		wp_register_style('choices', 'https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css', [], '10.2.0');
+		wp_register_script('choices', 'https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js', [], '10.2.0', true);
 		// Plugin assets
-		wp_register_style('reval-frontend', $plugin_url . 'frontend/assets/css/reval.css', ['bootstrap-5'], $ver);
-		wp_register_script('reval-frontend', $plugin_url . 'frontend/assets/js/reval-form.js', ['bootstrap-5'], $ver, true);
+		wp_register_style('reval-frontend', $plugin_url . 'frontend/assets/css/reval.css', ['bootstrap-5','choices'], $ver);
+		wp_register_script('reval-frontend', $plugin_url . 'frontend/assets/js/reval-form.js', ['bootstrap-5','choices'], $ver, true);
 	}
 
 	public function render_frontend_form(): string {
 		// Enqueue assets only when shortcode renders
 		wp_enqueue_style('bootstrap-5');
+		wp_enqueue_style('choices');
 		wp_enqueue_style('reval-frontend');
 		wp_enqueue_script('bootstrap-5');
+		wp_enqueue_script('choices');
 		wp_enqueue_script('reval-frontend');
 
 		// Localize config for JS
