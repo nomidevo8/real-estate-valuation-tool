@@ -24,6 +24,8 @@ class REValuationPlugin {
 		add_action('init', [$this, 'maybe_seed_defaults']);
 		add_action('admin_menu', [$this, 'register_admin_menu']);
 		add_filter('upload_mimes', [$this, 'allow_mimes']);
+		add_action('wp_enqueue_scripts', [$this, 'register_frontend_assets']);
+		add_shortcode('reval_form', [$this, 'render_frontend_form']);
 	}
 
 	public function register_routes() {
@@ -67,6 +69,13 @@ class REValuationPlugin {
 			'methods' => 'POST',
 			'callback' => [$this, 'handle_save_formulas'],
 			'permission_callback' => function() { return current_user_can('manage_options'); }
+		]);
+
+		// Public communes list for frontend form
+		register_rest_route(self::REST_NAMESPACE, '/communes', [
+			'methods' => 'GET',
+			'callback' => [$this, 'handle_get_communes'],
+			'permission_callback' => '__return_true'
 		]);
 	}
 
@@ -638,6 +647,56 @@ class REValuationPlugin {
 		$storage->save_formulas($formulas);
 		
 		return new \WP_REST_Response(['status' => 'ok', 'message' => 'Formulas saved successfully'], 200);
+	}
+
+	public function handle_get_communes(\WP_REST_Request $request) {
+		$storage = new REValuationStorage();
+		$communes = $storage->get_communes();
+		// Return as array of {label, value, price}
+		$items = [];
+		foreach ($communes as $name => $price) {
+			$items[] = [
+				'label' => $name,
+				'value' => $name,
+				'price' => (float) $price
+			];
+		}
+		return new \WP_REST_Response(['communes' => $items], 200);
+	}
+
+	public function register_frontend_assets() {
+		$ver = '0.1.1';
+		$plugin_url = plugin_dir_url(__FILE__);
+		// Bootstrap from CDN
+		wp_register_style('bootstrap-5', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css', [], '5.3.3');
+		wp_register_script('bootstrap-5', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js', [], '5.3.3', true);
+		// Plugin assets
+		wp_register_style('reval-frontend', $plugin_url . 'frontend/assets/css/reval.css', ['bootstrap-5'], $ver);
+		wp_register_script('reval-frontend', $plugin_url . 'frontend/assets/js/reval-form.js', ['bootstrap-5'], $ver, true);
+	}
+
+	public function render_frontend_form(): string {
+		// Enqueue assets only when shortcode renders
+		wp_enqueue_style('bootstrap-5');
+		wp_enqueue_style('reval-frontend');
+		wp_enqueue_script('bootstrap-5');
+		wp_enqueue_script('reval-frontend');
+
+		// Localize config for JS
+		$cfg = [
+			'root' => esc_url_raw(get_rest_url(null, self::REST_NAMESPACE . '/')),
+			'nonce' => wp_create_nonce('wp_rest')
+		];
+		wp_localize_script('reval-frontend', 'REVAL_CFG', $cfg);
+
+		ob_start();
+		$tpl = __DIR__ . '/frontend/form.php';
+		if (file_exists($tpl)) {
+			include $tpl;
+		} else {
+			echo '<div class="alert alert-danger">Form template not found.</div>';
+		}
+		return ob_get_clean();
 	}
 }
 

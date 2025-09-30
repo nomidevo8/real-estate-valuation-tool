@@ -1,0 +1,9 @@
+.reval-container .nav-pills .nav-link {
+	border-radius: 999rem;
+}
+.reval-container .tab-content {
+	min-height: 260px;
+}
+#reval-summary-cards .card { height: 100%; }
+
+
