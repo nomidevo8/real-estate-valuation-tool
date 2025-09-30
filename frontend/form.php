@@ -9,7 +9,7 @@
 			<!-- One field per step -->
 			<div class="reval-step" data-field="type">
 				<label class="form-label">Property Type</label>
-				<select class="form-select" name="type" required>
+				<select class="form-select" name="type" required data-display="cards">
 					<option value="">Select type</option>
 					<option value="apartment">Apartment</option>
 					<option value="house">House</option>
@@ -41,7 +41,7 @@
 
 			<div class="reval-step d-none" data-field="apply_year_coef">
 				<label class="form-label">Apply year coefficient?</label>
-				<select class="form-select" name="apply_year_coef">
+				<select class="form-select" name="apply_year_coef" data-display="cards">
 					<option>No</option>
 					<option>Yes</option>
 				</select>
@@ -54,14 +54,14 @@
 
 			<div class="reval-step d-none" data-field="energy_efficiency">
 				<label class="form-label">Energy efficiency</label>
-				<select class="form-select" name="energy_efficiency">
+				<select class="form-select" name="energy_efficiency" data-display="cards">
 					<option>A</option><option>B</option><option selected>C</option><option>D</option><option>E</option><option>F</option><option>G</option>
 				</select>
 			</div>
 
 			<div class="reval-step d-none" data-field="location_type">
 				<label class="form-label">Location type</label>
-				<select class="form-select" name="location_type">
+				<select class="form-select" name="location_type" data-display="cards">
 					<option value="city_center">City center</option>
 					<option value="residential" selected>Residential</option>
 					<option value="suburban">Suburban</option>
@@ -71,7 +71,7 @@
 
 			<div class="reval-step d-none" data-field="condition">
 				<label class="form-label">Condition</label>
-				<select class="form-select" name="condition">
+				<select class="form-select" name="condition" data-display="cards">
 					<option value="excellent">Excellent</option>
 					<option value="good">Good</option>
 					<option value="average" selected>Average</option>

@@ -9,6 +9,36 @@
     }
     function hideAlert(){ var el = qs('#reval-alert'); if(el){ el.classList.add('d-none'); } }
 
+    function enhanceSelectsAsCards(root){
+        qsa('select[data-display="cards"]', root).forEach(function(sel){
+            // build card group
+            var wrapper = document.createElement('div');
+            wrapper.className = 'reval-card-group row g-2';
+            var current = sel.value;
+            Array.prototype.slice.call(sel.options).forEach(function(opt){
+                if(opt.value === '') return; // skip placeholder
+                var col = document.createElement('div');
+                col.className = 'col-6 col-md-3';
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'reval-card btn w-100 ' + (opt.value === current ? 'reval-card-active btn-primary' : 'btn-outline-primary');
+                btn.setAttribute('data-value', opt.value);
+                btn.textContent = opt.text;
+                btn.addEventListener('click', function(){
+                    sel.value = opt.value;
+                    // update active state
+                    qsa('.reval-card', wrapper).forEach(function(b){ b.classList.remove('reval-card-active', 'btn-primary'); b.classList.add('btn-outline-primary'); });
+                    btn.classList.add('reval-card-active', 'btn-primary');
+                    btn.classList.remove('btn-outline-primary');
+                });
+                col.appendChild(btn);
+                wrapper.appendChild(col);
+            });
+            sel.classList.add('d-none');
+            sel.parentNode.insertBefore(wrapper, sel.nextSibling);
+        });
+    }
+
     function getSteps(){ return qsa('.reval-step'); }
     function currentStepIndex(){ return getSteps().findIndex(function(s){ return !s.classList.contains('d-none'); }); }
     function showStep(idx){
@@ -117,6 +147,7 @@
 		loadCommunes();
 
         showStep(0);
+        enhanceSelectsAsCards(form);
         qsa('[data-reval-next]').forEach(function(btn){ btn.addEventListener('click', function(){
             // validate current visible field if required
             var step = getSteps()[currentStepIndex()];

@@ -5,5 +5,7 @@
 	min-height: 260px;
 }
 #reval-summary-cards .card { height: 100%; }
+.reval-card-group .reval-card { padding: 12px; }
+.reval-card-group .reval-card.reval-card-active { box-shadow: 0 0 0 0.2rem rgba(13,110,253,.25); }
 
 
