@@ -124,6 +124,31 @@ class REValuationStorage {
 		return array_slice($sorted, $offset, $limit, true);
 	}
 
+	public function delete_evaluation(string $evaluation_id): void {
+		$evaluations = get_option($this->key_evaluations, []);
+		if (isset($evaluations[$evaluation_id])) {
+			unset($evaluations[$evaluation_id]);
+			update_option($this->key_evaluations, $evaluations, false);
+		}
+	}
+
+	public function delete_evaluations(array $evaluation_ids): int {
+		$evaluations = get_option($this->key_evaluations, []);
+		$deleted = 0;
+		foreach ($evaluation_ids as $id) {
+			if (isset($evaluations[$id])) {
+				unset($evaluations[$id]);
+				$deleted++;
+			}
+		}
+		update_option($this->key_evaluations, $evaluations, false);
+		return $deleted;
+	}
+
+	public function clear_all_evaluations(): void {
+		update_option($this->key_evaluations, [], false);
+	}
+
 	public function get_evaluation_history(int $limit = 100): array {
 		return get_option($this->key_evaluation_history, []);
 	}

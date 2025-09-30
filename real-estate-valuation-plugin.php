@@ -350,6 +350,29 @@ class REValuationPlugin {
 			settings_errors('reval_cleanup');
 		}
 
+		// Handle single delete (uses bulk nonce for simplicity)
+		if (isset($_POST['reval_delete_single']) && isset($_POST['reval_bulk_delete_nonce']) && wp_verify_nonce($_POST['reval_bulk_delete_nonce'], 'reval_bulk_delete')) {
+			$id = sanitize_text_field($_POST['reval_delete_single']);
+			$storage->delete_evaluation($id);
+			add_settings_error('reval_delete', 'reval_delete_success', 'Deleted selected evaluation.', 'updated');
+			settings_errors('reval_delete');
+		}
+
+		// Handle bulk delete
+		if (isset($_POST['reval_bulk_delete']) && isset($_POST['reval_bulk_delete_nonce']) && wp_verify_nonce($_POST['reval_bulk_delete_nonce'], 'reval_bulk_delete')) {
+			$ids = array_map('sanitize_text_field', (array) ($_POST['reval_selected'] ?? []));
+			$deleted = $storage->delete_evaluations($ids);
+			add_settings_error('reval_bulk_delete', 'reval_bulk_delete_success', "Deleted {$deleted} evaluations.", 'updated');
+			settings_errors('reval_bulk_delete');
+		}
+
+		// Handle delete all
+		if (isset($_POST['reval_clear_all']) && isset($_POST['reval_bulk_delete_nonce']) && wp_verify_nonce($_POST['reval_bulk_delete_nonce'], 'reval_bulk_delete')) {
+			$storage->clear_all_evaluations();
+			add_settings_error('reval_clear_all', 'reval_clear_all_success', 'Deleted all evaluations.', 'updated');
+			settings_errors('reval_clear_all');
+		}
+
 		// Handle individual evaluation view
 		if (isset($_GET['action']) && $_GET['action'] === 'view' && isset($_GET['id'])) {
 			$this->render_evaluation_details($_GET['id']);
@@ -385,9 +408,16 @@ class REValuationPlugin {
 				</div>
 			</div>
 
+			<form method="post">
+			<?php wp_nonce_field('reval_bulk_delete', 'reval_bulk_delete_nonce'); ?>
+			<div style="margin:10px 0;">
+				<input type="submit" name="reval_bulk_delete" class="button button-secondary" value="Delete Selected" onclick="return confirm('Delete selected evaluations?');" />
+				<input type="submit" name="reval_clear_all" class="button" value="Delete All" onclick="return confirm('Delete ALL evaluations?');" />
+			</div>
 			<table class="wp-list-table widefat fixed striped">
 				<thead>
 					<tr>
+						<th style="width:24px;"><input type="checkbox" id="reval-select-all" onclick="document.querySelectorAll('.reval-select').forEach(cb=>cb.checked=this.checked);" /></th>
 						<th>ID</th>
 						<th>Date</th>
 						<th>Commune</th>
@@ -401,6 +431,7 @@ class REValuationPlugin {
 				<tbody>
 					<?php foreach ($evaluations as $id => $evaluation): ?>
 					<tr>
+						<td><input type="checkbox" class="reval-select" name="reval_selected[]" value="<?php echo esc_attr($id); ?>" /></td>
 						<td><?php echo esc_html(substr($id, 0, 8)); ?>...</td>
 						<td><?php echo esc_html(date('Y-m-d H:i', strtotime($evaluation['timestamp']))); ?></td>
 						<td><?php echo esc_html($evaluation['input']['commune']); ?></td>
@@ -409,12 +440,17 @@ class REValuationPlugin {
 						<td><?php echo number_format($evaluation['result']['valeur_totale'], 0, ',', ' '); ?> €</td>
 						<td><?php echo esc_html(get_userdata($evaluation['user_id'])->display_name ?? 'Unknown'); ?></td>
 						<td>
+							<button type="submit" name="reval_delete_single" value="<?php echo esc_attr($id); ?>" class="button button-small" onclick="return confirm('Delete this evaluation?');">Delete</button>
 							<a href="<?php echo admin_url('admin.php?page=reval_history&action=view&id=' . $id); ?>" class="button button-small">View Details</a>
 						</td>
 					</tr>
 					<?php endforeach; ?>
 				</tbody>
 			</table>
+			<div style="margin:10px 0;">
+				<input type="submit" name="reval_bulk_delete" class="button button-secondary" value="Delete Selected" onclick="return confirm('Delete selected evaluations?');" />
+			</div>
+			</form>
 		</div>
 		<?php
 	}
