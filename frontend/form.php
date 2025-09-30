@@ -17,6 +17,17 @@
 				</select>
 			</div>
 
+			<div class="reval-step d-none" data-field="email">
+				<label class="form-label">Email</label>
+				<input type="email" class="form-control" name="email" placeholder="you@example.com" required />
+			</div>
+
+			<div class="reval-step d-none" data-field="phone">
+				<label class="form-label">Phone</label>
+				<input type="tel" class="form-control" name="phone" placeholder="+352 123 456 789" pattern="[+0-9 ()-]{6,}" required />
+				<div class="form-text">Digits, spaces, +, (), - allowed</div>
+			</div>
+
 			<div class="reval-step d-none" data-field="commune">
 				<label class="form-label">Commune</label>
 				<select class="form-select" name="commune" id="reval-commune" required>

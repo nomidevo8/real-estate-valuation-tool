@@ -482,6 +482,8 @@ class REValuationPlugin {
 						<tr><th>Living Area:</th><td><?php echo esc_html($input['living_m2']); ?> m²</td></tr>
 						<tr><th>Land Area:</th><td><?php echo esc_html($input['land_ares'] ?? 0); ?> ares</td></tr>
 						<tr><th>Bedrooms:</th><td><?php echo esc_html($input['bedrooms'] ?? 0); ?></td></tr>
+						<tr><th>Email:</th><td><?php echo esc_html($input['email'] ?? ''); ?></td></tr>
+						<tr><th>Phone:</th><td><?php echo esc_html($input['phone'] ?? ''); ?></td></tr>
 						<tr><th>Year Built:</th><td><?php echo esc_html($input['year_built'] ?? 'N/A'); ?></td></tr>
 						<tr><th>Energy Efficiency:</th><td><?php echo esc_html($input['energy_efficiency'] ?? 'N/A'); ?></td></tr>
 						<tr><th>Location Type:</th><td><?php echo esc_html(ucfirst($input['location_type'] ?? 'N/A')); ?></td></tr>

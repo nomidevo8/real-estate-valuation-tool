@@ -211,6 +211,8 @@ class REValuationService
 		$condition = trim($input['condition'] ?? 'average');
 		$special_features = $input['special_features'] ?? [];
 		$custom_adjustments = $input['custom_adjustments'] ?? [];
+		$email = trim((string)($input['email'] ?? ''));
+		$phone = trim((string)($input['phone'] ?? ''));
 
 		$communes = $this->storage->get_communes();
 		$weights = $this->storage->get_weights();
