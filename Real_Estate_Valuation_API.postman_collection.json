@@ -1,0 +1,466 @@
+{
+	"info": {
+		"_postman_id": "real-estate-valuation-api",
+		"name": "Real Estate Valuation API",
+		"description": "Complete API collection for Real Estate Valuation Plugin with test data",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Upload Data",
+			"item": [
+				{
+					"name": "Upload CSV File",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "IMMO.csv"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/wp-json/reval/v1/upload",
+							"host": ["{{base_url}}"],
+							"path": ["wp-json", "reval", "v1", "upload"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload XLSX File",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "valuation_data.xlsx"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/wp-json/reval/v1/upload",
+							"host": ["{{base_url}}"],
+							"path": ["wp-json", "reval", "v1", "upload"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Property Evaluation",
+			"item": [
+				{
+					"name": "Basic Apartment Evaluation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": \"apartment\",\n  \"commune\": \"Luxembourg-Ville\",\n  \"land_ares\": 0,\n  \"living_m2\": 85,\n  \"bedrooms\": 2,\n  \"balcony_m2\": 8,\n  \"terrace_m2\": 0,\n  \"private_garden_m2\": 0,\n  \"shared_garden_m2\": 0,\n  \"cellar_m2\": 5,\n  \"garage_box_units\": 1,\n  \"parking_indoor_units\": 0,\n  \"parking_outdoor_units\": 0,\n  \"apply_year_coef\": \"yes\",\n  \"year_built\": 2015,\n  \"energy_efficiency\": \"B\",\n  \"location_type\": \"city_center\",\n  \"condition\": \"good\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/wp-json/reval/v1/evaluate",
+							"host": ["{{base_url}}"],
+							"path": ["wp-json", "reval", "v1", "evaluate"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Luxury Villa Evaluation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": \"villa\",\n  \"commune\": \"Strassen\",\n  \"land_ares\": 12,\n  \"living_m2\": 250,\n  \"bedrooms\": 5,\n  \"balcony_m2\": 15,\n  \"terrace_m2\": 40,\n  \"private_garden_m2\": 800,\n  \"shared_garden_m2\": 0,\n  \"cellar_m2\": 60,\n  \"garage_box_units\": 2,\n  \"parking_indoor_units\": 1,\n  \"parking_outdoor_units\": 2,\n  \"apply_year_coef\": \"yes\",\n  \"year_built\": 2020,\n  \"energy_efficiency\": \"A\",\n  \"location_type\": \"residential\",\n  \"condition\": \"excellent\",\n  \"special_features\": {\n    \"swimming_pool\": 0.15,\n    \"home_cinema\": 0.05,\n    \"wine_cellar\": 0.03\n  },\n  \"custom_adjustments\": {\n    \"market_premium\": 0.08,\n    \"architectural_design\": 0.05\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/wp-json/reval/v1/evaluate",
+							"host": ["{{base_url}}"],
+							"path": ["wp-json", "reval", "v1", "evaluate"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Family House Evaluation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": \"house\",\n  \"commune\": \"Hesperange\",\n  \"land_ares\": 8,\n  \"living_m2\": 180,\n  \"bedrooms\": 4,\n  \"balcony_m2\": 0,\n  \"terrace_m2\": 25,\n  \"private_garden_m2\": 400,\n  \"shared_garden_m2\": 0,\n  \"cellar_m2\": 30,\n  \"garage_box_units\": 1,\n  \"parking_indoor_units\": 0,\n  \"parking_outdoor_units\": 1,\n  \"apply_year_coef\": \"yes\",\n  \"year_built\": 1995,\n  \"energy_efficiency\": \"D\",\n  \"location_type\": \"suburban\",\n  \"condition\": \"average\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/wp-json/reval/v1/evaluate",
+							"host": ["{{base_url}}"],
+							"path": ["wp-json", "reval", "v1", "evaluate"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Old Property Evaluation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": \"apartment\",\n  \"commune\": \"Esch-sur-Alzette\",\n  \"land_ares\": 0,\n  \"living_m2\": 65,\n  \"bedrooms\": 1,\n  \"balcony_m2\": 4,\n  \"terrace_m2\": 0,\n  \"private_garden_m2\": 0,\n  \"shared_garden_m2\": 0,\n  \"cellar_m2\": 8,\n  \"garage_box_units\": 0,\n  \"parking_indoor_units\": 0,\n  \"parking_outdoor_units\": 1,\n  \"apply_year_coef\": \"yes\",\n  \"year_built\": 1985,\n  \"energy_efficiency\": \"F\",\n  \"location_type\": \"rural\",\n  \"condition\": \"poor\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/wp-json/reval/v1/evaluate",
+							"host": ["{{base_url}}"],
+							"path": ["wp-json", "reval", "v1", "evaluate"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Minimal Property Evaluation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": \"apartment\",\n  \"commune\": \"Luxembourg-Ville\",\n  \"living_m2\": 45\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/wp-json/reval/v1/evaluate",
+							"host": ["{{base_url}}"],
+							"path": ["wp-json", "reval", "v1", "evaluate"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Evaluation Management",
+			"item": [
+				{
+					"name": "Get All Evaluations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/wp-json/reval/v1/evaluations?limit=20&offset=0",
+							"host": ["{{base_url}}"],
+							"path": ["wp-json", "reval", "v1", "evaluations"],
+							"query": [
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Evaluation by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/wp-json/reval/v1/evaluations/{{evaluation_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["wp-json", "reval", "v1", "evaluations", "{{evaluation_id}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Evaluations with Pagination",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/wp-json/reval/v1/evaluations?limit=10&offset=20",
+							"host": ["{{base_url}}"],
+							"path": ["wp-json", "reval", "v1", "evaluations"],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "offset",
+									"value": "20"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Statistics & Analytics",
+			"item": [
+				{
+					"name": "Get Statistics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/wp-json/reval/v1/statistics",
+							"host": ["{{base_url}}"],
+							"path": ["wp-json", "reval", "v1", "statistics"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Formulas Management",
+			"item": [
+				{
+					"name": "Get Current Formulas",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/wp-json/reval/v1/formulas",
+							"host": ["{{base_url}}"],
+							"path": ["wp-json", "reval", "v1", "formulas"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Basic Formulas",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"land_coefficient\": 0.12,\n  \"bedroom_bonus_multiplier\": 6,\n  \"range_low_percent\": -0.08,\n  \"range_high_percent\": 0.08,\n  \"type_coefficients\": {\n    \"apartment\": -0.08,\n    \"house\": 0.0,\n    \"villa\": 0.15\n  },\n  \"energy_efficiency_bonus\": {\n    \"A\": 0.12,\n    \"B\": 0.08,\n    \"C\": 0.0,\n    \"D\": -0.08,\n    \"E\": -0.15,\n    \"F\": -0.20,\n    \"G\": -0.25\n  },\n  \"location_factors\": {\n    \"city_center\": 0.20,\n    \"residential\": 0.08,\n    \"suburban\": 0.0,\n    \"rural\": -0.15\n  },\n  \"condition_factors\": {\n    \"excellent\": 0.15,\n    \"good\": 0.08,\n    \"average\": 0.0,\n    \"poor\": -0.15,\n    \"very_poor\": -0.25\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/wp-json/reval/v1/formulas",
+							"host": ["{{base_url}}"],
+							"path": ["wp-json", "reval", "v1", "formulas"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset to Default Formulas",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"land_coefficient\": 0.1,\n  \"bedroom_bonus_multiplier\": 5,\n  \"type_coefficients\": {\n    \"apartment\": -0.05,\n    \"house\": 0.0,\n    \"villa\": 0.10\n  },\n  \"range_low_percent\": -0.05,\n  \"range_high_percent\": 0.05,\n  \"energy_efficiency_bonus\": {\n    \"A\": 0.10,\n    \"B\": 0.05,\n    \"C\": 0.0,\n    \"D\": -0.05,\n    \"E\": -0.10,\n    \"F\": -0.15,\n    \"G\": -0.20\n  },\n  \"location_factors\": {\n    \"city_center\": 0.15,\n    \"residential\": 0.05,\n    \"suburban\": 0.0,\n    \"rural\": -0.10\n  },\n  \"condition_factors\": {\n    \"excellent\": 0.10,\n    \"good\": 0.05,\n    \"average\": 0.0,\n    \"poor\": -0.10,\n    \"very_poor\": -0.20\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/wp-json/reval/v1/formulas",
+							"host": ["{{base_url}}"],
+							"path": ["wp-json", "reval", "v1", "formulas"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Error Testing",
+			"item": [
+				{
+					"name": "Invalid Commune",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": \"apartment\",\n  \"commune\": \"Invalid-Commune\",\n  \"living_m2\": 100\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/wp-json/reval/v1/evaluate",
+							"host": ["{{base_url}}"],
+							"path": ["wp-json", "reval", "v1", "evaluate"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Missing Required Fields",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": \"apartment\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/wp-json/reval/v1/evaluate",
+							"host": ["{{base_url}}"],
+							"path": ["wp-json", "reval", "v1", "evaluate"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Evaluation ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/wp-json/reval/v1/evaluations/invalid-id",
+							"host": ["{{base_url}}"],
+							"path": ["wp-json", "reval", "v1", "evaluations", "invalid-id"]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost/dannCleanly",
+			"type": "string"
+		},
+		{
+			"key": "admin_token",
+			"value": "your-admin-token-here",
+			"type": "string"
+		},
+		{
+			"key": "evaluation_id",
+			"value": "eval_1234567890",
+			"type": "string"
+		}
+	]
+}
