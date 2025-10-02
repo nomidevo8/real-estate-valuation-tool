@@ -135,8 +135,15 @@
 				<p class="text-muted">Review your inputs and submit to see valuation.</p>
 				<div id="reval-review" class="row g-2"></div>
 			</div>
+			<div class="reval-step d-none" data-field="code_confirmation">
+				<p class="text-muted">Please enter the confirmation code sent to your email.</p>
+				<input type="text" class="form-control" id="reval-code" placeholder="Code from your email" required />
+				<div id="reval-code-error" class="text-danger small mt-1 d-none"></div>
+				<button type="button" class="btn btn-success mt-2" id="reval-confirm-btn">Confirm Code</button>
+			</div>
 
-			<div class="d-flex justify-content-between mt-3">
+
+			<div class="d-flex justify-content-between mt-3 dev-navigation">
 				<button class="btn btn-outline-secondary" data-reval-prev type="button">Back</button>
 				<button class="btn btn-primary" data-reval-next type="button">Next</button>
 				<button class="btn btn-success d-none" id="reval-submit" type="button">Evaluate</button>
@@ -153,6 +160,9 @@
 				<hr />
 				<h5>Details</h5>
 				<div id="reval-details"></div>
+				<div class="mt-3">
+					<button type="button" class="btn btn-secondary text-bg-dark" onclick="location.reload();">Go Back</button>
+				</div>
 			</div>
 		</div>
 	</div>

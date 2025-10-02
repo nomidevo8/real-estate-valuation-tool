@@ -48,7 +48,7 @@
         if(counter){ counter.textContent = 'Step ' + (idx+1) + ' of ' + steps.length; }
         // Controls
         qs('[data-reval-prev]').classList.toggle('d-none', idx === 0);
-        var isLast = idx === steps.length - 1;
+        var isLast = idx === steps.length - 2;
         qs('[data-reval-next]').classList.toggle('d-none', isLast);
         qs('#reval-submit').classList.toggle('d-none', !isLast);
         // If review step, render review
@@ -165,22 +165,103 @@
         }); });
         qsa('[data-reval-prev]').forEach(function(btn){ btn.addEventListener('click', function(){ switchStep(-1); }); });
 
+        // Main submit button
         qs('#reval-submit').addEventListener('click', function(){
-			hideAlert();
-			if(!form.reportValidity()){ showAlert('warning', 'Please fill required fields.'); return; }
-			var payload = serializeForm(form);
-			fetch(REVAL_CFG.root + 'evaluate', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': REVAL_CFG.nonce },
-				body: JSON.stringify(payload)
-			})
-			.then(function(r){ return r.json(); })
-			.then(function(json){
-				if(json.error){ showAlert('danger', json.error); return; }
-				renderResults(json);
-			})
-			.catch(function(err){ showAlert('danger', 'Evaluation failed.'); });
-		});
+            hideAlert();
+            var steps = getSteps();
+            var isLast = steps.length - 2 === steps.length - 2;
+            if(!isLast){
+                if(!form.reportValidity()){ showAlert('warning', 'Please fill required fields.'); return; }
+            }
+
+            var payload = serializeForm(form);
+
+            // Step 1: Send request to /evaluate-request
+            fetch(REVAL_CFG.root + 'evaluate-request', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': REVAL_CFG.nonce },
+                body: JSON.stringify(payload)
+            })
+            .then(r => r.json())
+            .then(json => {
+                if(json.error){ showAlert('danger', json.error); return; }
+
+                // Show code input to user
+                showStepForCodeConfirmation();
+            })
+            .catch(err => { showAlert('danger', 'Request failed.'); });
+        });
+
+        function showStepForCodeConfirmation() {
+            var codeStep = qs('[data-field="code_confirmation"]');
+            var devNavigation = qs('.dev-navigation');
+            var devNavigation = qs('.dev-navigation');
+            var revalForm = qs('#reval-form');
+            if(!codeStep) return;
+        
+            // Hide the original submit button
+            qs('#reval-submit').classList.add('d-none');
+            devNavigation.classList.add('d-none');
+        
+            // Move to the code confirmation step
+            switchStep(1); 
+        
+            var codeInput = codeStep.querySelector('#reval-code');
+            var errorDiv = codeStep.querySelector('#reval-code-error');
+            var confirmBtn = codeStep.querySelector('#reval-confirm-btn');
+        
+            confirmBtn.addEventListener('click', function() {
+                var code = codeInput.value.trim();
+                if(!code){
+                    errorDiv.textContent = 'Please enter the code.';
+                    errorDiv.classList.remove('d-none');
+                    codeInput.classList.add('is-invalid');
+                    return;
+                }
+        
+                var payload = { email: form.querySelector('[name="email"]').value.trim(), code: code };
+        
+                fetch(REVAL_CFG.root + 'evaluate-confirm', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': REVAL_CFG.nonce },
+                    body: JSON.stringify(payload)
+                })
+                .then(r => r.json())
+                .then(json => {
+                    if(json.error){
+                        errorDiv.textContent = json.error;
+                        errorDiv.classList.remove('d-none');
+                        codeInput.classList.add('is-invalid');
+                        return;
+                    }
+        
+                    // Success: remove error styles
+                    errorDiv.textContent = '';
+                    errorDiv.classList.add('d-none');
+                    codeInput.classList.remove('is-invalid');
+                    
+                    // Render results
+                    renderResults(json);
+                    revalForm.classList.add('d-none');
+                    
+                    // Optionally hide the code step
+                    codeStep.classList.add('d-none');
+                })
+                .catch(err => {
+                    errorDiv.textContent = 'Confirmation failed.';
+                    errorDiv.classList.remove('d-none');
+                    codeInput.classList.add('is-invalid');
+                });
+            });
+        
+            codeInput.addEventListener('input', function() {
+                errorDiv.textContent = '';
+                errorDiv.classList.add('d-none');
+                codeInput.classList.remove('is-invalid');
+            });
+        }
+        
+        
 	});
 })();
 

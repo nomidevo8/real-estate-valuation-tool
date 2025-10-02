@@ -35,6 +35,18 @@ class REValuationPlugin {
 			'permission_callback' => function() { return current_user_can('manage_options'); }
 		]);
 
+		register_rest_route(self::REST_NAMESPACE, '/evaluate-request', [
+			'methods' => 'POST',
+			'callback' => [$this, 'handle_evaluate_request'],
+			'permission_callback' => '__return_true'
+		]);
+
+		register_rest_route(self::REST_NAMESPACE, '/evaluate-confirm', [
+			'methods' => 'POST',
+			'callback' => [$this, 'handle_evaluate_confirm'],
+			'permission_callback' => '__return_true'
+		]);
+
 		register_rest_route(self::REST_NAMESPACE, '/evaluate', [
 			'methods' => 'POST',
 			'callback' => [$this, 'handle_evaluate'],
@@ -78,6 +90,49 @@ class REValuationPlugin {
 			'permission_callback' => '__return_true'
 		]);
 	}
+
+	
+	public function handle_evaluate_request(\WP_REST_Request $request) {
+		$params = $request->get_json_params();
+		$email = sanitize_email($params['email']);
+
+		// Generate unique code
+		$code = wp_generate_password(6, false, false);
+
+		// Store data in a transient (or custom table)
+		set_transient('eval_' . md5($email), [
+			'params' => $params,
+			'code'   => $code,
+		], 15 * MINUTE_IN_SECONDS);
+
+		// Send code by email
+		wp_mail($email, 'Your Simulation Code', 'Your confirmation code is: ' . $code);
+
+		return new \WP_REST_Response(['status' => 'pending', 'message' => 'Check your email for a code', 'code' => $code], 200);
+	}
+
+	public function handle_evaluate_confirm(\WP_REST_Request $request) {
+		$params = $request->get_json_params();
+		$email = sanitize_email($params['email']);
+		$code = sanitize_text_field($params['code']);
+		$stored = get_transient('eval_' . md5($email));
+		if (!$stored || $stored['code'] !== $code) {
+			return new \WP_REST_Response(['error' => 'Invalid or expired code'], 400);
+		}
+	
+		// Code valid → run evaluation
+		$service = new REValuationService(new REValuationStorage());
+		$result = $service->evaluate($stored['params']);
+	
+		// Delete transient after use
+		delete_transient('eval_' . md5($email));
+	
+		// Send email with result if needed
+		wp_mail($email, 'Your Simulation Result', 'Here is your result: ' . print_r($result, true));
+	
+		return new \WP_REST_Response(['status' => 'ok', 'result' => $result], 200);
+	}
+	
 
 	public function handle_upload(\WP_REST_Request $request) {
 		$files = $request->get_file_params();
