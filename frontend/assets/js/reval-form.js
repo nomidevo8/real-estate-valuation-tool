@@ -51,18 +51,7 @@
         var isLast = idx === steps.length - 2;
         qs('[data-reval-next]').classList.toggle('d-none', isLast);
         qs('#reval-submit').classList.toggle('d-none', !isLast);
-        // If review step, render review
-        if(steps[idx].getAttribute('data-field') === 'review'){
-            var form = qs('#reval-form');
-            var payload = serializeForm(form);
-            var review = qs('#reval-review');
-            if(review){
-                review.innerHTML = Object.keys(payload).map(function(k){
-                    var v = payload[k];
-                    return '<div class="col-md-6"><div class="border rounded p-2 bg-white "><small class="text-muted">' + k.replace(/_/g,' ') + '</small><div class="fw-semibold " style="overflow: hidden;">' + v + '</div></div></div>';
-                }).join('');
-            }
-        }
+        // If review step, do nothing (no summary rendering)
     }
     function switchStep(delta){
         var idx = currentStepIndex();
@@ -92,40 +81,178 @@
 	}
 
     function renderResults(res){
-		var wrap = qs('#reval-results');
-		var cards = qs('#reval-summary-cards');
-		var details = qs('#reval-details');
-		wrap.classList.remove('d-none');
+        var wrap = qs('#reval-results');
+        var cards = qs('#reval-summary-cards');
+        var details = qs('#reval-details');
+        wrap.classList.remove('d-none');
+        var wrapper = document.querySelector('.reval-container .reval-wrapper');
+        if (wrapper) {
+            wrapper.style.minHeight = 'unset';
+        }
 
-		var r = res.result;
-		cards.innerHTML = [
-			{title: 'Total Value', value: formatCurrency(r.valeur_totale)},
-			{title: 'Price per m²', value: formatCurrency(r.prix_m2)},
-			{title: 'Weighted Area', value: formatNumber(r.weighted_m2,1) + ' m²'},
-			{title: 'Building Value', value: formatCurrency(r.valeur_batie)}
-		].map(function(c){
-			return '<div class="col-12 col-sm-6 col-lg-3 mb-3"><div class="card"><div class="card-body"><h6 class="card-subtitle mb-2 text-muted">' + c.title + '</h6><div class="fs-5 fw-bold">' + c.value + '</div></div></div></div>';
-		}).join('');
-
-		details.innerHTML = '' +
-			'<div class="row">' +
-				'<div class="col-md-6"><ul class="list-group mb-3">' +
-					'<li class="list-group-item d-flex justify-content-between"><span>Land value</span><strong>' + formatCurrency(r.land_value) + '</strong></li>' +
-					'<li class="list-group-item d-flex justify-content-between"><span>Bedroom bonus</span><strong>' + formatCurrency(r.bedroom_bonus) + '</strong></li>' +
-					'<li class="list-group-item d-flex justify-content-between"><span>Forfaits total</span><strong>' + formatCurrency(r.forfaits_total) + '</strong></li>' +
-				'</ul></div>' +
-				'<div class="col-md-6"><ul class="list-group mb-3">' +
-					'<li class="list-group-item d-flex justify-content-between"><span>Year coef</span><strong>' + formatNumber(r.coef_year*100,1) + '%</strong></li>' +
-					'<li class="list-group-item d-flex justify-content-between"><span>Type coef</span><strong>' + formatNumber(r.coef_type*100,1) + '%</strong></li>' +
-					'<li class="list-group-item d-flex justify-content-between"><span>Energy bonus</span><strong>' + formatNumber(r.energy_bonus*100,1) + '%</strong></li>' +
-					'<li class="list-group-item d-flex justify-content-between"><span>Location factor</span><strong>' + formatNumber(r.location_factor*100,1) + '%</strong></li>' +
-					'<li class="list-group-item d-flex justify-content-between"><span>Condition factor</span><strong>' + formatNumber(r.condition_factor*100,1) + '%</strong></li>' +
-				'</ul></div>' +
-			'</div>' +
-			'<div class="row"><div class="col-12"><div class="alert alert-info">' +
-				'Range: <strong>' + formatCurrency(r.range.low) + '</strong> - <strong>' + formatCurrency(r.range.high) + '</strong>' +
-			'</div></div></div>';
-	}
+        var r = res.result;
+        
+        // Main summary cards with range
+        cards.innerHTML = 
+            '<div class="col-12 mb-4">' +
+                '<div class="card border-0 shadow-sm">' +
+                    '<div class="card-body text-center py-4">' +
+                        '<h5 class="text-muted mb-3">Estimated Property Value</h5>' +
+                        '<div class="row align-items-center">' +
+                            '<div class="col-md-4">' +
+                                '<div class="text-muted small">MINIMUM</div>' +
+                                '<div class="fs-4 fw-bold text-secondary">' + formatCurrency(r.range.low) + '</div>' +
+                            '</div>' +
+                            '<div class="col-md-4">' +
+                                '<div class="text-muted small">ESTIMATED VALUE</div>' +
+                                '<div class="fs-2 fw-bold text-primary">' + formatCurrency(r.range.mid) + '</div>' +
+                                '<div class="text-muted small mt-1">' + formatCurrency(r.prix_m2) + ' per m²</div>' +
+                            '</div>' +
+                            '<div class="col-md-4">' +
+                                '<div class="text-muted small">MAXIMUM</div>' +
+                                '<div class="fs-4 fw-bold text-secondary">' + formatCurrency(r.range.high) + '</div>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="col-12 col-sm-6 col-lg-3 mb-3">' +
+                '<div class="card h-100">' +
+                    '<div class="card-body">' +
+                        '<h6 class="card-subtitle mb-2 text-muted">Weighted Area</h6>' +
+                        '<div class="fs-5 fw-bold">' + formatNumber(r.weighted_m2,1) + ' m²</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="col-12 col-sm-6 col-lg-3 mb-3">' +
+                '<div class="card h-100">' +
+                    '<div class="card-body">' +
+                        '<h6 class="card-subtitle mb-2 text-muted">Building Value</h6>' +
+                        '<div class="fs-5 fw-bold">' + formatCurrency(r.valeur_batie) + '</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="col-12 col-sm-6 col-lg-3 mb-3">' +
+                '<div class="card h-100">' +
+                    '<div class="card-body">' +
+                        '<h6 class="card-subtitle mb-2 text-muted">Land Value</h6>' +
+                        '<div class="fs-5 fw-bold">' + formatCurrency(r.land_value) + '</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="col-12 col-sm-6 col-lg-3 mb-3">' +
+                '<div class="card h-100">' +
+                    '<div class="card-body">' +
+                        '<h6 class="card-subtitle mb-2 text-muted">Base Value</h6>' +
+                        '<div class="fs-5 fw-bold">' + formatCurrency(r.breakdown.base_value) + '</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+    
+        details.innerHTML = 
+            '<div class="row g-3">' +
+                // Value Components
+                '<div class="col-lg-6">' +
+                    '<div class="card h-100">' +
+                        '<div class="card-header bg-light" style="background: #2c3e50;">' +
+                            '<h6 class="mb-0">Value Components</h6>' +
+                        '</div>' +
+                        '<div class="card-body">' +
+                            '<ul class="list-group list-group-flush">' +
+                                '<li class="list-group-item d-flex justify-content-between align-items-center">' +
+                                    '<span>Building Value</span>' +
+                                    '<strong class="text-primary">' + formatCurrency(r.valeur_batie) + '</strong>' +
+                                '</li>' +
+                                '<li class="list-group-item d-flex justify-content-between align-items-center">' +
+                                    '<span>Land Value</span>' +
+                                    '<strong>' + formatCurrency(r.land_value) + '</strong>' +
+                                '</li>' +
+                                '<li class="list-group-item d-flex justify-content-between align-items-center">' +
+                                    '<span>Bedroom Bonus</span>' +
+                                    '<strong>' + formatCurrency(r.bedroom_bonus) + '</strong>' +
+                                '</li>' +
+                                '<li class="list-group-item d-flex justify-content-between align-items-center">' +
+                                    '<span>Additional Features</span>' +
+                                    '<strong>' + formatCurrency(r.forfaits_total) + '</strong>' +
+                                '</li>' +
+                                '<li class="list-group-item d-flex justify-content-between align-items-center">' +
+                                    '<span>Special Features Bonus</span>' +
+                                    '<strong>' + formatCurrency(r.special_features_bonus) + '</strong>' +
+                                '</li>' +
+                                '<li class="list-group-item d-flex justify-content-between align-items-center bg-light">' +
+                                    '<span class="fw-bold">Total Coefficient Applied</span>' +
+                                    '<strong class="text-success">' + formatNumber(r.total_coefficient*100,2) + '%</strong>' +
+                                '</li>' +
+                            '</ul>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+                
+                // Adjustment Factors
+                '<div class="col-lg-6">' +
+                    '<div class="card h-100">' +
+                        '<div class="card-header bg-light" style="background: #2c3e50;">' +
+                            '<h6 class="mb-0">Adjustment Factors</h6>' +
+                        '</div>' +
+                        '<div class="card-body">' +
+                            '<ul class="list-group list-group-flush">' +
+                                '<li class="list-group-item d-flex justify-content-between align-items-center">' +
+                                    '<span>Year Built Adjustment</span>' +
+                                    '<strong class="' + (r.coef_year >= 0 ? 'text-success' : 'text-danger') + '">' + 
+                                    (r.coef_year >= 0 ? '+' : '') + formatNumber(r.coef_year*100,1) + '%</strong>' +
+                                '</li>' +
+                                '<li class="list-group-item d-flex justify-content-between align-items-center">' +
+                                    '<span>Property Type Adjustment</span>' +
+                                    '<strong class="' + (r.coef_type >= 0 ? 'text-success' : 'text-danger') + '">' + 
+                                    (r.coef_type >= 0 ? '+' : '') + formatNumber(r.coef_type*100,1) + '%</strong>' +
+                                '</li>' +
+                                '<li class="list-group-item d-flex justify-content-between align-items-center">' +
+                                    '<span>Energy Efficiency Bonus</span>' +
+                                    '<strong class="' + (r.energy_bonus >= 0 ? 'text-success' : 'text-danger') + '">' + 
+                                    (r.energy_bonus >= 0 ? '+' : '') + formatNumber(r.energy_bonus*100,1) + '%</strong>' +
+                                '</li>' +
+                                '<li class="list-group-item d-flex justify-content-between align-items-center">' +
+                                    '<span>Location Factor</span>' +
+                                    '<strong class="' + (r.location_factor >= 0 ? 'text-success' : 'text-danger') + '">' + 
+                                    (r.location_factor >= 0 ? '+' : '') + formatNumber(r.location_factor*100,1) + '%</strong>' +
+                                '</li>' +
+                                '<li class="list-group-item d-flex justify-content-between align-items-center">' +
+                                    '<span>Condition Factor</span>' +
+                                    '<strong class="' + (r.condition_factor >= 0 ? 'text-success' : 'text-danger') + '">' + 
+                                    (r.condition_factor >= 0 ? '+' : '') + formatNumber(r.condition_factor*100,1) + '%</strong>' +
+                                '</li>' +
+                                '<li class="list-group-item d-flex justify-content-between align-items-center">' +
+                                    '<span>Custom Adjustments</span>' +
+                                    '<strong class="' + (r.custom_adjustments_total >= 0 ? 'text-success' : 'text-danger') + '">' + 
+                                    (r.custom_adjustments_total >= 0 ? '+' : '') + formatCurrency(r.custom_adjustments_total) + '</strong>' +
+                                '</li>' +
+                            '</ul>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+                
+                // Evaluation Info
+                '<div class="col-12">' +
+                    '<div class="card">' +
+                        '<div class="card-body">' +
+                            '<div class="row text-center">' +
+                                '<div class="col-md-6">' +
+                                    '<small class="text-muted">Evaluation ID</small>' +
+                                    '<div class="fw-semibold">' + r.evaluation_id + '</div>' +
+                                '</div>' +
+                                '<div class="col-md-6">' +
+                                    '<small class="text-muted">Timestamp</small>' +
+                                    '<div class="fw-semibold">' + r.timestamp + '</div>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="text-center mt-4">' +
+                '<button type="button" class="btn btn-secondary btn-lg px-5" onclick="location.reload();">New Evaluation</button>' +
+            '</div>';
+    }
 
     function loadCommunes(){
 		var select = qs('#reval-commune');
@@ -197,6 +324,7 @@
             var devNavigation = qs('.dev-navigation');
             var devNavigation = qs('.dev-navigation');
             var revalForm = qs('#reval-form');
+            var revalRightPanel = qs('.reval-right-panel');
             if(!codeStep) return;
         
             // Hide the original submit button
@@ -243,6 +371,7 @@
                     // Render results
                     renderResults(json);
                     revalForm.classList.add('d-none');
+                    revalRightPanel.classList.add('d-none');
                     
                     // Optionally hide the code step
                     codeStep.classList.add('d-none');

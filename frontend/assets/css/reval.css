@@ -9,3 +9,358 @@
 .reval-card-group .reval-card.reval-card-active { box-shadow: 0 0 0 0.2rem rgba(13,110,253,.25); }
 
 
+
+.reval-container {
+	max-width: 100%;
+	padding: 0;
+	margin: 0;
+}
+
+.reval-container h2 {
+	display: none;
+}
+
+.reval-container .reval-wrapper {
+	display: flex;
+	min-height: 100vh;
+}
+
+/* Left Panel - Form */
+.reval-container .reval-left-panel {
+	flex: 1;
+	background: white;
+	padding: 3rem 4rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.reval-container .reval-icon-container {
+	width: 150px;
+	height: 150px;
+	margin-bottom: 3rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.reval-container .reval-icon {
+	width: 100%;
+	height: 100%;
+	position: relative;
+}
+
+.reval-container .reval-icon-circle {
+	width: 100%;
+	height: 100%;
+	border: 8px solid #7B9BC4;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+}
+
+.reval-container .reval-icon-inner {
+	font-size: 4rem;
+	color: #2c3e50;
+}
+
+.reval-container #reval-form {
+	width: 100%;
+	max-width: 500px;
+	background: transparent;
+}
+
+.reval-container .border.rounded.p-3.bg-light {
+	background: transparent !important;
+	border: none !important;
+	padding: 0 !important;
+}
+
+.reval-container #reval-step-counter {
+	display: none;
+}
+
+.reval-container .form-label {
+	font-weight: 600;
+	color: #2c3e50;
+	margin-bottom: 0.5rem;
+	font-size: 0.95rem;
+}
+
+.reval-container .form-control, .reval-container .form-select {
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	padding: 0.75rem;
+	font-size: 0.95rem;
+}
+
+.reval-container .form-control:focus, .reval-container .form-select:focus {
+	border-color: #7B9BC4;
+	box-shadow: 0 0 0 0.2rem rgba(123, 155, 196, 0.15);
+}
+
+/* Card-based select styling */
+.reval-container .reval-card-group {
+	margin-top: 0.5rem;
+}
+
+.reval-container .reval-card {
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	padding: 0.75rem;
+	font-weight: 500;
+	transition: all 0.2s ease;
+	background: white;
+	min-height: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+}
+
+.reval-container .reval-card:hover {
+	border-color: #7B9BC4;
+	background: #f8f9fa;
+}
+
+.reval-container .reval-card.reval-card-active {
+	background: #7B9BC4;
+	border-color: #7B9BC4;
+	color: white;
+}
+
+/* Navigation buttons */
+.reval-container .dev-navigation {
+	margin-top: 2rem;
+	display: flex;
+	justify-content: center;
+	gap: 1rem;
+}
+
+.reval-container .btn {
+	border-radius: 25px;
+	padding: 0.5rem 2rem;
+	font-weight: 500;
+	transition: all 0.3s ease;
+	border: none;
+	min-width: 120px;
+}
+
+.reval-container .btn-outline-secondary {
+	border: 2px solid #ddd;
+	color: #6c757d;
+	background: white;
+}
+
+.reval-container .btn-outline-secondary:hover {
+	background: #f8f9fa;
+	border-color: #7B9BC4;
+	color: #2c3e50;
+}
+
+.reval-container .btn-primary {
+	background: #2c3e50;
+	color: white;
+}
+
+.reval-container .btn-primary:hover {
+	background: #1a252f;
+}
+
+.reval-container .btn-success {
+	background: #28a745;
+	color: white;
+}
+
+.reval-container .btn-success:hover {
+	background: #218838;
+}
+
+/* Right Panel - Summary */
+.reval-container .reval-right-panel {
+	flex: 0 0 450px;
+	background: #f8f9fa;
+	padding: 3rem 2.5rem;
+	border-left: 1px solid #e0e0e0;
+	max-height: 500px;
+	overflow-y: auto;
+}
+
+.reval-container .reval-summary-header {
+	margin-bottom: 2rem;
+}
+
+.reval-container .reval-summary-header h3 {
+	font-size: 2rem;
+	font-weight: 300;
+	color: #2c3e50;
+	margin-bottom: 0.5rem;
+}
+
+.reval-container .reval-summary-header p {
+	color: #6c757d;
+	font-size: 0.9rem;
+}
+
+.reval-container .reval-summary-section {
+	background: white;
+	border-radius: 8px;
+	margin-bottom: 1rem;
+	overflow: hidden;
+}
+
+.reval-container .reval-summary-section-header {
+	padding: 1rem 1.25rem;
+	cursor: pointer;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	border-bottom: 1px solid #e0e0e0;
+}
+
+.reval-container .reval-summary-section-header h4 {
+	font-size: 1rem;
+	font-weight: 600;
+	color: #2c3e50;
+	margin: 0;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.reval-container .reval-summary-section-header .chevron {
+	transition: transform 0.3s ease;
+}
+
+.reval-container .reval-summary-section-header.collapsed .chevron {
+	transform: rotate(180deg);
+}
+
+.reval-container .reval-summary-section-body {
+	padding: 1.25rem;
+	max-height: 500px;
+	overflow-y: auto;
+}
+
+.reval-container .reval-summary-section-body.collapsed {
+	display: none;
+}
+
+.reval-container .reval-summary-item {
+	display: flex;
+	justify-content: space-between;
+	padding: 0.5rem 0;
+	border-bottom: 1px solid #f0f0f0;
+}
+
+.reval-container .reval-summary-item:last-child {
+	border-bottom: none;
+}
+
+.reval-container .reval-summary-item-label {
+	color: #6c757d;
+	font-size: 0.9rem;
+}
+
+.reval-container .reval-summary-item-value {
+	color: #2c3e50;
+	font-weight: 600;
+	font-size: 0.9rem;
+}
+
+.reval-container .reval-summary-empty {
+	color: #adb5bd;
+	font-size: 0.9rem;
+	font-style: italic;
+}
+
+/* Results section */
+.reval-container #reval-results {
+	animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+.reval-container #reval-results .card {
+	border: none;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.reval-container #reval-results .card-header {
+	background: #2c3e50;
+	color: white;
+	font-weight: 600;
+	padding: 1.25rem;
+}
+
+.reval-container #reval-summary-cards .card {
+	height: 100%;
+	border: 1px solid #e0e0e0;
+	border-radius: 8px;
+	transition: all 0.3s ease;
+}
+
+.reval-container #reval-summary-cards .card:hover {
+	border-color: #7B9BC4;
+	box-shadow: 0 4px 12px rgba(123, 155, 196, 0.15);
+}
+
+.reval-container .list-group-item {
+	border: 1px solid #e0e0e0;
+	padding: 0.75rem 1rem;
+}
+
+.reval-container .alert {
+	border-radius: 8px;
+	border: none;
+}
+
+.reval-container #reval-alert {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	z-index: 9999;
+	max-width: 400px;
+}
+
+/* Review section */
+.reval-container #reval-review .border {
+	border: 1px solid #e0e0e0 !important;
+	border-radius: 8px;
+	background: #f8f9fa;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+	.reval-wrapper {
+		flex-direction: column;
+	}
+
+	.reval-container .reval-right-panel {
+		flex: 1;
+		border-left: none;
+		border-top: 1px solid #e0e0e0;
+	}
+
+	.reval-container .reval-left-panel {
+		padding: 2rem 1.5rem;
+	}
+}
+
+@media (max-width: 576px) {
+	.reval-container .reval-card-group .col-6 {
+		flex: 0 0 100%;
+		max-width: 100%;
+	}
+}
