@@ -108,7 +108,7 @@ class REValuationPlugin {
 		// Send code by email
 		wp_mail($email, 'Your Simulation Code', 'Your confirmation code is: ' . $code);
 
-		return new \WP_REST_Response(['status' => 'pending', 'message' => 'Check your email for a code', 'code' => $code], 200);
+		return new \WP_REST_Response(['status' => 'pending', 'message' => 'Check your email for a code'], 200);
 	}
 
 	public function handle_evaluate_confirm(\WP_REST_Request $request) {
@@ -123,12 +123,40 @@ class REValuationPlugin {
 		// Code valid → run evaluation
 		$service = new REValuationService(new REValuationStorage());
 		$result = $service->evaluate($stored['params']);
-	
+		$message = '
+		<html>
+		<head>
+		  <style>
+			body { font-family: Arial, sans-serif; color: #222; }
+			.result-table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+			.result-table th, .result-table td { border: 1px solid #ddd; padding: 8px; }
+			.result-table th { background: #f5f5f5; }
+			.highlight { color: #1a7f37; font-weight: bold; }
+		  </style>
+		</head>
+		<body>
+		  <h2>Your Real Estate Valuation Result</h2>
+		  <table class="result-table">
+			<tr><th>Total Value</th><td class="highlight">'.number_format($result['valeur_totale'], 0, ',', ' ').' €</td></tr>
+			<tr><th>Price per m²</th><td>'.number_format($result['prix_m2'], 0, ',', ' ').' €</td></tr>
+			<tr><th>Weighted Area</th><td>'.number_format($result['weighted_m2'], 1, ',', ' ').' m²</td></tr>
+			<tr><th>Building Value</th><td>'.number_format($result['valeur_batie'], 0, ',', ' ').' €</td></tr>
+			<tr><th>Estimated Range</th><td>
+			  '.number_format($result['range']['low'], 0, ',', ' ').' € – 
+			  '.number_format($result['range']['high'], 0, ',', ' ').' €
+			</td></tr>
+		  </table>
+		  <p>Thank you for using our valuation tool.<br>
+		  If you have any questions, feel free to reply to this email.</p>
+		</body>
+		</html>
+		';
 		// Delete transient after use
 		delete_transient('eval_' . md5($email));
 	
-		// Send email with result if needed
-		wp_mail($email, 'Your Simulation Result', 'Here is your result: ' . print_r($result, true));
+		$headers = array('Content-Type: text/html; charset=UTF-8');
+		$subject = 'Your Real Estate Valuation Result';
+		wp_mail($email, $subject, $message, $headers);
 	
 		return new \WP_REST_Response(['status' => 'ok', 'result' => $result], 200);
 	}
